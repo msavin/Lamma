@@ -1,6 +1,6 @@
-# Lamma 
+<img src="https://raw.githubusercontent.com/msavin/Lamma/master/Lamma.png">
 
-Lamma is a simple layout manager for your Meteor/Blaze applications. It provides you with a centralized structure to manage all the layouts in your application. You can use it independently, or integrate with Parrot for a super easy solution.
+Lamma is a simple layout manager for your Meteor/Blaze applications. It provides you with a centralized structure to manage all the layouts in your application. You can use it independently, or integrate with <a href="https://github.com/msavin/Parrot">Parrot</a> for a super easy solution.
 
 # How to Use
 
