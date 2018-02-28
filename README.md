@@ -1,10 +1,20 @@
-<img src="https://raw.githubusercontent.com/msavin/Lamma/master/Lamma.png">
+<img align="right" width="216" src="https://raw.githubusercontent.com/msavin/Lamma/master/Lamma.png">
 
-Lamma is a simple layout manager for your Meteor/Blaze applications. It provides you with a centralized structure to manage all the layouts in your application. You can use it independently, or integrate with <a href="https://github.com/msavin/Parrot">Parrot</a> for a super easy solution.
+# Lamma 
 
-# How to Use
+## Layout Manager for Meteor-Blaze
 
-First, define your layouts anywhere in the application: 
+Lamma is a simple LAyout MAnager for your Meteor/Blaze applications. It provides you with a centralized structure to manage all your layouts. You can use it independently, or integrate with <a href="https://github.com/msavin/Parrot">Parrot</a> for a super easy layout solution.
+
+# Quick Start
+
+First, add Lamma to your Meteor application:
+
+```bash
+meteor add msavin:lamma
+```
+
+Then, define your layouts anywhere in the application: 
 
 ```javascript
 // All the fields here are option
@@ -31,7 +41,7 @@ Layout.register({
 });
 ```
 
-Once you've defined your layouts, you just need to stick them in wherever you feel is right: 
+Finally, place your layouts where necessary.
 
 ```html
 <body>
@@ -49,6 +59,10 @@ Once you've defined your layouts, you just need to stick them in wherever you fe
 </body>
 ```
 
+Additionally, notice that in the `processor` function above, we automatically prefix each layout template with either `body_` or `sidebar_`. This ensures you never have a clash between the two template sets, while giving you the flexibility to use any name you would like.
+
+# How to Manage Layouts 
+
 The layouts will automatically render their default views. To override the default: 
 
 ```javascript
@@ -62,29 +76,18 @@ Layout.set({
 });
 ```
 
-Whenever you set your layouts, it will:
-1. take the value you provide it
-2. run the value through the processor function
-3. check if the appropriate template exists
-4. if the template exists, render it
-5. if the template does not exist, render the error template (if specified)
-
-In this example, we use the processor function to prefix each layout template with either `body_` or `sidebar_`. This ensures we never have a clash between the two template sets. However, you can run any kind of logic you would like there.
+Whenever you change the Layout values, Lamma will automatically run through to logic and check that the template exists. If the template exists, it will render it in. If not, it will display an error.
 
 Since Lamma is powered by ReactiveDict, you can also use the get function to see what layout is being rendered:
 
 ```javascript
 Layout.get('body'); // returns 'about'
-Layout.all();       // returns object
+Layout.all();       // returns object with all layouts
 ```
 
-Finally, Lamma will provide you errors for you in development mode if your layout is not properly configured. 
+# How to Manage Layouts with Parrot
 
-# How to Use With Parrot
-
-Parrot is a new, simple route for Meteor that works great with Lamma. 
-
-Parrot manages the values set on the URL, you can easily connect it with Lamma to "automate" your layout renderings. The idea is, rather than use `Layout.set`, we would watch some of the values from Parrot and use that to render the appropriate views. All you have to do is tell Lamma to be friends with Parrot: 
+Parrot is a new kind of router for building single page applications that works great with Lamma. Parrot works in a similar way to Reactive-Dict, except that it stores that information on the URL instead of just in memory. By integrating it with Lamma, you can reduce the amount of code in your application.
 
 ```javascript
 Layout.register({
@@ -110,11 +113,13 @@ Layout.register({
 });
 ```
 
-In this case, having the following url:
+With the example above, having the following url set by Parrot:
 
-    http://meteor.toys/#documentation/sidebar=compatibility
+```
+http://meteor.toys/#documentation/sidebar=compatibility
+```
 
-Would be the same as calling:
+would be the same as calling:
     
 ```javascript
 Layout.set({
@@ -123,7 +128,7 @@ Layout.set({
 });
 ```
 
-However, by integrating the two, you don't have to call that function over and over again. Between the `default` view, the `notFound` view, and the development mode errors, you can trust everything to work right.
+However, by integrating the two, you don't have to write this kind of logic over and over again. Between the `default` view, the `notFound` view, and the development mode errors, you can trust everything to work right.
 
 # What Do Parrots Have to Do With Lammas? 
 
@@ -133,7 +138,7 @@ Between onRendered, onDestroyed, and template-level subscriptions, you should be
 
 # Getting Creative with Lamma Processor
 
-You can run virtually any function with-in the processor. In my examples, I just prefix the templates to keep naming simple and avoid clashes. In another case, you might prefer to whitelist which templates may be viewable to which uses:
+You can run virtually any function with-in the processor. In my examples, I just prefix the templates to keep naming simple and avoid clashes. In another case, you might prefer to whitelist which templates may be viewable and when:
 
 ```javascript
 
@@ -141,9 +146,6 @@ Layout.register({
     body: {
         default: "home",     
         notFound: "notFound",
-        // By passing in `true` as a value for Parrot,
-        // you tell the layout manager to use the 
-        // section of the URL instead of a parameter
         Parrot: true,
         processor: function (name) {
             if (Meteor.user().isAdmin) {
@@ -156,10 +158,7 @@ Layout.register({
     anotherExample: {
         default: "home",     
         notFound: "notFound",
-        // By passing in `true` as a value for Parrot,
-        // you tell the layout manager to use the 
-        // section of the URL instead of a parameter
-        Parrot: true,
+        Parrot: "admin",
         processor: function (name) {
             adminTemplates = ['view', 'edit'];
             userTemplates = ['view', 'edit','delete']
